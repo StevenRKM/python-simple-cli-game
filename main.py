@@ -24,7 +24,11 @@ LEFT = 'left'
 RIGHT = 'right'
 
 def cls():
-    os.system('cls')
+    if os.name == 'nt':
+        import subprocess
+        tmp = subprocess.call('cls', shell=True)
+    else:
+        os.system('clear')
 
 def key():
     c = _getc()
