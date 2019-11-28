@@ -1,8 +1,22 @@
 import os
-import msvcrt
 import time
 import threading
 import random
+
+def _getc():
+    try:
+        import msvcrt
+        return msvcrt.getch()
+    except ImportError:
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
 
 UP = 'up'
 DOWN = 'down'
@@ -13,9 +27,9 @@ def cls():
     os.system('cls')
 
 def key():
-    c = msvcrt.getch()
+    c = _getc()
     if c is b'\xe0':
-        c = msvcrt.getch()
+        c = _getc()
         if c is b'H':
             return UP
         elif c is b'P':
