@@ -121,7 +121,7 @@ class GameThread(threading.Thread):
             line = list('PHPSUCKS')
             for i in range(len(line)):
                 y = bullet[1] + i + 1
-                if(y < self.y):
+                if(y < self.y-1):
                     self.setPixel(bullet[0], y, line[i])
 
 
