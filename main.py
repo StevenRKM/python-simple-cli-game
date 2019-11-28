@@ -5,18 +5,39 @@ import random
 
 def _getc():
     try:
+        #  windows
         import msvcrt
         return msvcrt.getch()
     except ImportError:
-        import sys, tty, termios
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
         try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+            # max
+            import Carbon
+            if Carbon.Evt.EventAvail(0x0008)[0] == 0:  # 0x0008 is the keyDownMask
+                return ''
+            else:
+                #
+                # The event contains the following info:
+                # (what,msg,when,where,mod)=Carbon.Evt.GetNextEvent(0x0008)[1]
+                #
+                # The message (msg) contains the ASCII char which is
+                # extracted with the 0x000000FF charCodeMask; this
+                # number is converted to an ASCII character with chr() and
+                # returned
+                #
+                (what, msg, when, where, mod) = Carbon.Evt.GetNextEvent(0x0008)[1]
+                return chr(msg & 0x000000FF)
+
+        except:
+            # unix
+            import sys, tty, termios
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(sys.stdin.fileno())
+                ch = sys.stdin.read(1)
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            return ch
 
 def _print(msg):
     print(msg, end='\r\n')
