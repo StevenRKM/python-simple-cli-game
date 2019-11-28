@@ -18,6 +18,9 @@ def _getc():
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
 
+def _print(msg):
+    print(msg, end='\r\n')
+
 UP = 'up'
 DOWN = 'down'
 LEFT = 'left'
@@ -134,11 +137,11 @@ class GameThread(threading.Thread):
             self.setPixel(enemy[0], enemy[1], '$')
 
         # render board
-        print('=' * (self.x+4))
+        _print('=' * (self.x+4))
         for row in self.output:
-            print('|' , ''.join(row), '|')
-        print('=' * (self.x + 4))
-        print('Ammo:', '^' * self.ammo)
+            _print('| %s |' % ''.join(row))
+        _print('=' * (self.x + 4))
+        _print('Ammo: %s' % ('^' * self.ammo))
 
     def update(self):
 
@@ -171,7 +174,7 @@ class GameThread(threading.Thread):
 
     def stop(self):
         self.running = False
-        print("stop running")
+        _print("stop running")
 
 
 game = GameThread()
