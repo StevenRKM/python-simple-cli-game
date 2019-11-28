@@ -38,6 +38,14 @@ def key():
             return LEFT
         elif c is b'M':
             return RIGHT
+    if c is b'w':
+        return UP
+    elif c is b's':
+        return DOWN
+    elif c is b'a':
+        return LEFT
+    elif c is b'd':
+        return RIGHT
     else:
         return c
 
