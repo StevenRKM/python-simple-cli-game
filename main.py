@@ -157,12 +157,23 @@ class GameThread(threading.Thread):
         for enemy in self.enemies:
             self.setPixel(enemy[0], enemy[1], '$')
 
-        # render board
-        _print('=' * (self.x+4))
+        output = ""
+
+        output = output + ('=' * (self.x+4)) + "\r\n"
+
         for row in self.output:
-            _print('| %s |' % ''.join(row))
-        _print('=' * (self.x + 4))
-        _print('Ammo: %s' % ('^' * self.ammo))
+            output = output + ('| %s |' % ''.join(row)) + "\r\n"
+
+        output = output + ('=' * (self.x + 4)) + "\r\n"
+        output = output + ('Ammo: %s' % ('^' * self.ammo)) + "\r\n"
+
+        # render board
+        # _print('=' * (self.x+4))
+        # for row in self.output:
+        #     _print('| %s |' % ''.join(row))
+        # _print('=' * (self.x + 4))
+        # _print('Ammo: %s' % ('^' * self.ammo))
+        print(output)
 
     def update(self):
 
@@ -181,6 +192,10 @@ class GameThread(threading.Thread):
         # remove collided bullets and enemies
         self.bullets = [i for i in self.bullets if i not in hits]
         self.enemies = [i for i in self.enemies if i not in hits]
+
+        # move enemies every 60 frames
+        if self.frame % 60 is 0:
+            self.enemies = [(x,y+1) for x,y in self.enemies]
 
     def addRandomEnemy(self):
         enemy = (random.randint(0, self.x - 1), random.randint(0, 5))
